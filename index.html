@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-TW" class="h-full bg-slate-50">
+<html lang="zh-TW" class="h-full bg-[#FDFBF7]">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>專業版知識王挑戰 - Pro Trivia Master</title>
+    <title>專業版知識王挑戰 - 企業級系統</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -11,26 +11,20 @@
             theme: {
                 extend: {
                     colors: {
-                        duo: {
-                            green: '#58cc02',
-                            greenDark: '#46a302',
-                            blue: '#1cb0f6',
-                            blueDark: '#1899d6',
-                            yellow: '#ffc800',
-                            yellowDark: '#e5b200',
-                            red: '#ff4b4b',
-                            redDark: '#ea2b2b',
-                            purple: '#ce82ff',
-                            cardBg: '#ffffff',
+                        corp: {
+                            bg: '#FDFBF7',
+                            card: '#FFFFFF',
+                            sidebar: '#F4F0EA',
+                            border: '#E6E0D4',
+                            primary: '#1E293B',
+                            accent: '#2563EB',
+                            gold: '#D97706',
+                            text: '#0F172A',
+                            subtext: '#64748B'
                         }
                     },
                     fontFamily: {
-                        sans: ['DIN Round Pro', 'Feather', 'Inter', 'system-ui', 'sans-serif'],
-                    },
-                    boxShadow: {
-                        'duo': '0 4px 0 0',
-                        'duo-lg': '0 6px 0 0',
-                        'duo-xl': '0 8px 0 0',
+                        sans: ['Inter', 'Microsoft JhengHei', 'system-ui', 'sans-serif'],
                     }
                 }
             }
@@ -48,13 +42,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     
     <style>
-        .duo-btn {
-            transition: all 0.1s ease;
-        }
-        .duo-btn:active {
-            transform: translateY(4px);
-            box-shadow: 0 0 0 0 !important;
-        }
         .perspective-1000 {
             perspective: 1000px;
         }
@@ -67,217 +54,251 @@
         .rotate-y-180 {
             transform: rotateY(180deg);
         }
-        /* Custom scrollbar */
+        /* Custom scrollbar for Corporate design */
         ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: #f1f5f9;
+            background: #F4F0EA;
         }
         ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 9999px;
+            background: #CBD5E1;
+            border-radius: 4px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
+            background: #94A3B8;
         }
     </style>
 </head>
-<body class="h-full text-slate-800 flex flex-col font-sans select-none bg-slate-100">
+<body class="h-full text-corp-text flex flex-col font-sans select-none bg-[#FDFBF7]">
 
     <!-- Auth Modal -->
-    <div id="authModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border-4 border-slate-200">
+    <div id="authModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl border border-corp-border">
             <div class="text-center mb-6">
-                <div class="w-20 h-20 bg-duo-green rounded-full flex items-center justify-center mx-auto mb-3 shadow-duo shadow-duo-greenDark">
-                    <i class="fa-solid me-1 fa-graduation-cap text-4xl text-white"></i>
+                <div class="w-16 h-16 bg-slate-800 text-amber-400 rounded-xl flex items-center justify-center mx-auto mb-3 shadow-md">
+                    <i class="fa-solid fa-graduation-cap text-3xl"></i>
                 </div>
-                <h2 class="text-2xl font-extrabold text-slate-800">專業版知識王挑戰</h2>
-                <p class="text-slate-500 font-medium text-sm mt-1">Duolingo 風格全方位學習與測驗平台</p>
+                <h2 class="text-2xl font-bold text-slate-900">企業專業知識王系統</h2>
+                <p class="text-corp-subtext text-xs mt-1">Enterprise Learning & Knowledge Base Platform</p>
             </div>
 
-            <div class="flex rounded-2xl bg-slate-100 p-1 mb-6 border-2 border-slate-200">
-                <button id="tabLogin" onclick="switchAuthTab('login')" class="flex-1 py-2 rounded-xl text-sm font-bold text-slate-700 bg-white shadow-sm transition">登入</button>
-                <button id="tabRegister" onclick="switchAuthTab('register')" class="flex-1 py-2 rounded-xl text-sm font-bold text-slate-500 transition">註冊帳號</button>
+            <div class="flex rounded-xl bg-corp-sidebar p-1 mb-6 border border-corp-border">
+                <button id="tabLogin" onclick="switchAuthTab('login')" class="flex-1 py-2 rounded-lg text-xs font-bold text-slate-800 bg-white shadow-sm transition">帳號登入</button>
+                <button id="tabRegister" onclick="switchAuthTab('register')" class="flex-1 py-2 rounded-lg text-xs font-bold text-slate-500 transition">建立帳號</button>
             </div>
 
             <!-- Login / Register Form -->
             <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
                 <div id="fullNameGroup" class="hidden">
-                    <label class="block text-xs font-black uppercase text-slate-400 mb-1">真實姓名</label>
-                    <input type="text" id="authFullName" placeholder="例如：張小明" class="w-full px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-duo-blue focus:outline-none font-bold text-slate-700">
+                    <label class="block text-xs font-bold text-slate-500 mb-1">真實姓名</label>
+                    <input type="text" id="authFullName" placeholder="例如：張經理" class="w-full px-4 py-2.5 rounded-xl border border-corp-border focus:border-blue-600 focus:outline-none text-sm font-medium">
                 </div>
                 <div>
-                    <label class="block text-xs font-black uppercase text-slate-400 mb-1">電子郵件</label>
-                    <input type="email" id="authEmail" required placeholder="name@example.com" class="w-full px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-duo-blue focus:outline-none font-bold text-slate-700">
+                    <label class="block text-xs font-bold text-slate-500 mb-1">企業電子郵件</label>
+                    <input type="email" id="authEmail" required placeholder="name@company.com" class="w-full px-4 py-2.5 rounded-xl border border-corp-border focus:border-blue-600 focus:outline-none text-sm font-medium">
                 </div>
                 <div>
-                    <label class="block text-xs font-black uppercase text-slate-400 mb-1">密碼</label>
-                    <input type="password" id="authPassword" required placeholder="••••••••" class="w-full px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-duo-blue focus:outline-none font-bold text-slate-700">
+                    <label class="block text-xs font-bold text-slate-500 mb-1">存取密碼</label>
+                    <input type="password" id="authPassword" required placeholder="••••••••" class="w-full px-4 py-2.5 rounded-xl border border-corp-border focus:border-blue-600 focus:outline-none text-sm font-medium">
                 </div>
 
-                <div id="authError" class="hidden text-duo-red font-bold text-sm text-center py-1"></div>
+                <div id="authError" class="hidden text-red-600 font-bold text-xs text-center py-1"></div>
 
-                <button type="submit" id="authSubmitBtn" class="duo-btn w-full py-3.5 bg-duo-green text-white font-extrabold text-lg rounded-2xl shadow-duo shadow-duo-greenDark hover:brightness-105 active:translate-y-1">
+                <button type="submit" id="authSubmitBtn" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm rounded-xl shadow transition">
                     登入系統
                 </button>
             </form>
 
             <div class="mt-4 text-center">
-                <button onclick="guestLogin()" class="text-xs text-slate-400 hover:text-slate-600 font-bold underline">
-                    以訪客身份直接體驗 (Demo 模式)
+                <button onclick="guestLogin()" class="text-xs text-slate-400 hover:text-slate-600 font-medium underline">
+                    以訪客 / 展示模式直接進入
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Main Container -->
-    <div class="flex-1 flex flex-col md:flex-row max-w-7xl w-full mx-auto p-2 sm:p-4 gap-4 h-full">
+    <!-- Main Fullscreen Layout (滿版 display, 無左右留白) -->
+    <div class="flex-1 flex flex-col md:flex-row w-full h-screen overflow-hidden">
 
         <!-- Sidebar Navigation -->
-        <aside class="w-full md:w-64 bg-white rounded-3xl p-4 border-2 border-slate-200 flex flex-col justify-between shrink-0 shadow-sm">
+        <aside class="w-full md:w-64 bg-[#F4F0EA] border-r border-corp-border p-5 flex flex-col justify-between shrink-0">
             <div>
-                <!-- Brand -->
-                <div class="flex items-center gap-3 px-3 py-2 mb-6">
-                    <div class="w-10 h-10 bg-duo-green rounded-2xl flex items-center justify-center text-white font-black shadow-duo shadow-duo-greenDark">
-                        <i class="fa-solid fa-brain text-xl"></i>
+                <!-- Brand Header -->
+                <div class="flex items-center gap-3 px-1 py-2 mb-8 border-b border-corp-border/60 pb-4">
+                    <div class="w-10 h-10 bg-slate-900 text-amber-400 rounded-xl flex items-center justify-center font-black shadow-sm shrink-0">
+                        <i class="fa-solid fa-briefcase text-lg"></i>
                     </div>
                     <div>
-                        <h1 class="font-extrabold text-lg text-slate-800 leading-tight">知識王 Pro</h1>
-                        <span class="text-xs font-bold text-duo-green uppercase tracking-wider">Trivia Master</span>
+                        <h1 class="font-bold text-base text-slate-900 leading-tight">企業知識王</h1>
+                        <span class="text-[10px] font-bold text-amber-700 tracking-wider uppercase">Pro Enterprise Edition</span>
                     </div>
                 </div>
 
-                <!-- Navigation Tabs -->
-                <nav class="space-y-2">
-                    <button onclick="switchTab('study')" id="nav-study" class="nav-item w-full flex items-center gap-4 px-4 py-3 rounded-2xl font-extrabold text-slate-500 hover:bg-slate-100 transition border-2 border-transparent">
-                        <i class="fa-solid fa-book-open text-xl text-duo-blue"></i> 學習
+                <!-- Navigation Tabs (題庫改為第一個選項) -->
+                <nav class="space-y-1.5">
+                    <button onclick="switchTab('questionBank')" id="nav-questionBank" class="nav-item w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-bold text-sm text-slate-600 hover:bg-white/80 transition">
+                        <i class="fa-solid fa-database text-lg text-slate-700"></i> 題庫中心
                     </button>
-                    <button onclick="switchTab('quiz')" id="nav-quiz" class="nav-item w-full flex items-center gap-4 px-4 py-3 rounded-2xl font-extrabold text-slate-500 hover:bg-slate-100 transition border-2 border-transparent">
-                        <i class="fa-solid fa-gamepad text-xl text-duo-green"></i> 測驗
+                    <button onclick="switchTab('study')" id="nav-study" class="nav-item w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-bold text-sm text-slate-600 hover:bg-white/80 transition">
+                        <i class="fa-solid fa-book-open text-lg text-blue-600"></i> 知識學習
                     </button>
-                    <button onclick="switchTab('badges')" id="nav-badges" class="nav-item w-full flex items-center gap-4 px-4 py-3 rounded-2xl font-extrabold text-slate-500 hover:bg-slate-100 transition border-2 border-transparent">
-                        <i class="fa-solid fa-award text-xl text-duo-yellow"></i> 徽章
+                    <button onclick="switchTab('quiz')" id="nav-quiz" class="nav-item w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-bold text-sm text-slate-600 hover:bg-white/80 transition">
+                        <i class="fa-solid fa-circle-check text-lg text-emerald-600"></i> 模擬測驗
                     </button>
-                    <button onclick="switchTab('leaderboard')" id="nav-leaderboard" class="nav-item w-full flex items-center gap-4 px-4 py-3 rounded-2xl font-extrabold text-slate-500 hover:bg-slate-100 transition border-2 border-transparent">
-                        <i class="fa-solid fa-trophy text-xl text-duo-purple"></i> 排行
+                    <button onclick="switchTab('badges')" id="nav-badges" class="nav-item w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-bold text-sm text-slate-600 hover:bg-white/80 transition">
+                        <i class="fa-solid fa-award text-lg text-amber-600"></i> 榮譽勳章
                     </button>
-                    <button onclick="switchTab('questionBank')" id="nav-questionBank" class="nav-item w-full flex items-center gap-4 px-4 py-3 rounded-2xl font-extrabold text-slate-500 hover:bg-slate-100 transition border-2 border-transparent">
-                        <i class="fa-solid fa-database text-xl text-slate-600"></i> 題庫
+                    <button onclick="switchTab('leaderboard')" id="nav-leaderboard" class="nav-item w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-bold text-sm text-slate-600 hover:bg-white/80 transition">
+                        <i class="fa-solid fa-chart-simple text-lg text-purple-600"></i> 績效排行
                     </button>
                 </nav>
             </div>
 
-            <!-- User Info & Connection Status Footer -->
-            <div class="mt-6 pt-4 border-t-2 border-slate-100 space-y-3">
-                <!-- User Profile Summary -->
-                <div id="userProfileCard" class="flex items-center gap-3 px-2 py-1">
-                    <div class="w-10 h-10 rounded-2xl bg-duo-purple text-white flex items-center justify-center font-black text-lg" id="userAvatar">
+            <!-- Footer Info -->
+            <div class="pt-4 border-t border-corp-border space-y-3">
+                <div id="userProfileCard" class="flex items-center gap-3 px-1">
+                    <div class="w-9 h-9 rounded-lg bg-slate-900 text-white flex items-center justify-center font-bold text-sm" id="userAvatar">
                         ?
                     </div>
                     <div class="overflow-hidden">
-                        <div class="font-extrabold text-slate-800 truncate text-sm" id="userNameDisplay">未登入</div>
-                        <div class="text-xs font-bold text-slate-400 truncate" id="userEmailDisplay">Guest Mode</div>
+                        <div class="font-bold text-slate-900 truncate text-xs" id="userNameDisplay">未登入</div>
+                        <div class="text-[10px] font-medium text-slate-500 truncate" id="userEmailDisplay">Visitor Mode</div>
                     </div>
                 </div>
 
-                <!-- Live Sync Connection Status Bar -->
-                <div class="bg-slate-50 rounded-2xl p-2.5 border-2 border-slate-200 space-y-1">
-                    <div class="flex items-center justify-between text-xs font-bold">
+                <div class="bg-white/60 rounded-xl p-2.5 border border-corp-border space-y-1">
+                    <div class="flex items-center justify-between text-[11px] font-bold">
                         <span class="text-slate-500 flex items-center gap-1.5">
-                            <span id="connDot" class="w-2.5 h-2.5 rounded-full bg-slate-400 inline-block animate-pulse"></span>
-                            連線狀態
+                            <span id="connDot" class="w-2 h-2 rounded-full bg-slate-400 inline-block"></span>
+                            雲端同步
                         </span>
                         <span id="connStatusText" class="text-slate-500">檢測中...</span>
                     </div>
                     <div class="text-[10px] text-slate-400 font-medium flex justify-between items-center">
-                        <span>上次存檔:</span>
-                        <span id="lastSavedTime" class="font-bold text-slate-600">尚未更新</span>
+                        <span>最後同步:</span>
+                        <span id="lastSavedTime" class="font-bold text-slate-600">尚未記錄</span>
                     </div>
                 </div>
 
-                <button onclick="logout()" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-xl text-xs transition">
-                    <i class="fa-solid fa-arrow-right-from-bracket me-1"></i> 登出
+                <button onclick="logout()" class="w-full py-2 bg-white hover:bg-slate-100 border border-corp-border text-slate-700 font-bold rounded-xl text-xs transition">
+                    <i class="fa-solid fa-right-from-bracket me-1"></i> 登出系統
                 </button>
             </div>
         </aside>
 
-        <!-- Main Content Area -->
-        <main class="flex-1 bg-white rounded-3xl p-4 sm:p-6 border-2 border-slate-200 flex flex-col overflow-y-auto shadow-sm">
+        <!-- Main Content Area (滿版延伸, 無左右 margin) -->
+        <main class="flex-1 bg-[#FDFBF7] p-6 flex flex-col h-full overflow-y-auto">
             
             <!-- Global Top Bar & High-Res Export Controls -->
-            <header class="flex flex-wrap items-center justify-between gap-3 pb-4 mb-4 border-b-2 border-slate-100">
+            <header class="flex flex-wrap items-center justify-between gap-4 pb-4 mb-5 border-b border-corp-border shrink-0">
                 <div class="flex items-center gap-3">
-                    <h2 id="pageTitle" class="text-2xl font-black text-slate-800">學習頁面</h2>
-                    <span id="pageSubtitle" class="text-xs font-bold text-slate-400 bg-slate-100 px-3 py-1 rounded-full">隨機 10 題複習</span>
+                    <h2 id="pageTitle" class="text-2xl font-black text-slate-900">題庫中心</h2>
+                    <span id="pageSubtitle" class="text-xs font-semibold text-slate-600 bg-corp-sidebar px-3 py-1 rounded-full border border-corp-border">題庫瀏覽、閱讀簽名與權限管理</span>
                 </div>
 
                 <!-- Export Controls Toolbar -->
-                <div class="flex items-center gap-2 flex-wrap">
-                    <button onclick="exportPageToExcel()" title="匯出本頁 Excel" class="duo-btn px-3 py-2 bg-emerald-500 text-white rounded-xl font-extrabold text-xs shadow-duo shadow-emerald-700 flex items-center gap-1.5">
-                        <i class="fa-solid fa-file-excel"></i> Excel
+                <div class="flex items-center gap-2">
+                    <button onclick="exportPageToExcel()" title="匯出本頁 Excel" class="px-3.5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg font-bold text-xs shadow-sm flex items-center gap-1.5 transition">
+                        <i class="fa-solid fa-file-excel"></i> 匯出 Excel
                     </button>
-                    <button onclick="exportPageToPNG()" title="匯出一鍵高畫質 PNG" class="duo-btn px-3 py-2 bg-duo-blue text-white rounded-xl font-extrabold text-xs shadow-duo shadow-duo-blueDark flex items-center gap-1.5">
-                        <i class="fa-solid fa-file-image"></i> PNG
+                    <button onclick="exportPageToPNG()" title="匯出一鍵高畫質 PNG" class="px-3.5 py-2 bg-blue-700 hover:bg-blue-800 text-white rounded-lg font-bold text-xs shadow-sm flex items-center gap-1.5 transition">
+                        <i class="fa-solid fa-file-image"></i> 匯出圖像
                     </button>
-                    <button onclick="exportPageToPDF()" title="匯出一鍵 PDF" class="duo-btn px-3 py-2 bg-duo-purple text-white rounded-xl font-extrabold text-xs shadow-duo shadow-purple-700 flex items-center gap-1.5">
-                        <i class="fa-solid fa-file-pdf"></i> PDF
+                    <button onclick="exportPageToPDF()" title="匯出一鍵 PDF" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg font-bold text-xs shadow-sm flex items-center gap-1.5 transition">
+                        <i class="fa-solid fa-file-pdf"></i> 匯出 PDF
                     </button>
                 </div>
             </header>
 
             <!-- Exportable Container Area -->
-            <div id="exportableArea" class="flex-1 flex flex-col">
+            <div id="exportableArea" class="flex-1 flex flex-col min-h-0">
 
-                <!-- Page 1: Study Mode (學習) -->
-                <section id="page-study" class="page-content space-y-6">
-                    <div class="flex justify-between items-center bg-blue-50 p-4 rounded-2xl border-2 border-blue-200">
-                        <div class="flex items-center gap-3">
-                            <i class="fa-solid fa-lightbulb text-duo-yellow text-2xl"></i>
-                            <div>
-                                <h3 class="font-extrabold text-slate-800">隨機抽卡學習模式</h3>
-                                <p class="text-xs text-slate-500 font-bold">點擊卡片可翻面查看正確答案與知識解析</p>
+                <!-- Page 1 (原 Page 5): Question Bank (題庫 - 現為第一頁面) -->
+                <section id="page-questionBank" class="page-content space-y-5">
+                    <!-- Bank Toolbar -->
+                    <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-4 rounded-xl border border-corp-border shadow-sm">
+                        <div class="flex-1 min-w-[260px]">
+                            <div class="relative">
+                                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+                                <input type="text" id="bankSearchInput" oninput="filterQuestionBank()" placeholder="輸入關鍵字檢索題庫..." class="w-full pl-9 pr-4 py-2 bg-corp-bg rounded-lg border border-corp-border font-medium text-slate-800 focus:outline-none focus:border-blue-600 text-xs">
                             </div>
                         </div>
-                        <button onclick="loadStudyCards()" class="duo-btn px-4 py-2 bg-duo-blue text-white font-extrabold text-xs rounded-xl shadow-duo shadow-duo-blueDark">
+
+                        <div class="flex items-center gap-2">
+                            <label class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-bold text-xs border border-corp-border cursor-pointer flex items-center gap-1.5 transition">
+                                <i class="fa-solid fa-file-import"></i> 匯入 JSON
+                                <input type="file" id="jsonFileInput" accept=".json" onchange="importJSONQuestionBank(event)" class="hidden">
+                            </label>
+                            <button onclick="openAddQuestionModal()" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg font-bold text-xs shadow-sm flex items-center gap-1.5 transition">
+                                <i class="fa-solid fa-plus"></i> 新增自訂題目
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Question Count & Auto-Sort Notice -->
+                    <div class="flex justify-between items-center px-1">
+                        <span id="bankCountBadge" class="text-xs font-bold text-slate-500 uppercase tracking-wider">總計 0 題</span>
+                        <span class="text-xs text-amber-700 font-bold bg-amber-50 px-2.5 py-1 rounded-md border border-amber-200">
+                            <i class="fa-solid fa-arrow-down-short-wide me-1"></i> 自動排序：未簽名（0次）排最上方，依簽名次數遞增排序
+                        </span>
+                    </div>
+
+                    <!-- Question Cards List Container -->
+                    <div id="questionBankGrid" class="space-y-3 pb-8">
+                        <!-- Dynamic Question Cards populated with Signatures -->
+                    </div>
+                </section>
+
+                <!-- Page 2 (原 Page 1): Study Mode (學習) -->
+                <section id="page-study" class="page-content hidden space-y-5">
+                    <div class="flex justify-between items-center bg-white p-4 rounded-xl border border-corp-border shadow-sm">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-lg">
+                                <i class="fa-solid fa-lightbulb"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-sm">隨機卡片卡牌學習</h3>
+                                <p class="text-xs text-slate-500">點擊卡片即可進行 3D 翻頁並閱讀正確答案解析</p>
+                            </div>
+                        </div>
+                        <button onclick="loadStudyCards()" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-lg shadow-sm transition">
                             <i class="fa-solid fa-rotate me-1"></i> 重新抽題
                         </button>
                     </div>
 
                     <div id="studyCardsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- Flashcards populated dynamically -->
+                        <!-- Flashcards dynamic -->
                     </div>
                 </section>
 
-                <!-- Page 2: Quiz Mode (測驗) -->
-                <section id="page-quiz" class="page-content hidden space-y-6">
+                <!-- Page 3 (原 Page 2): Quiz Mode (測驗) -->
+                <section id="page-quiz" class="page-content hidden space-y-5">
                     <!-- Start Screen -->
-                    <div id="quizStartCard" class="text-center py-12 px-4 max-w-lg mx-auto bg-slate-50 rounded-3xl border-2 border-slate-200 shadow-sm">
-                        <div class="w-24 h-24 bg-duo-green rounded-full flex items-center justify-center mx-auto mb-4 shadow-duo shadow-duo-greenDark text-white text-4xl">
-                            <i class="fa-solid fa-flag-checkered"></i>
+                    <div id="quizStartCard" class="text-center py-16 px-6 max-w-xl mx-auto bg-white rounded-2xl border border-corp-border shadow-sm">
+                        <div class="w-20 h-20 bg-slate-900 text-amber-400 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-sm text-3xl">
+                            <i class="fa-solid fa-circle-check"></i>
                         </div>
-                        <h3 class="text-2xl font-black text-slate-800 mb-2">準備好挑戰 10 題測驗了嗎？</h3>
-                        <p class="text-slate-500 font-bold text-sm mb-6">全對可以增加 100% 全對次數，並累積連續登入挑戰！</p>
-                        <button onclick="startQuiz()" class="duo-btn px-8 py-4 bg-duo-green text-white font-black text-xl rounded-2xl shadow-duo shadow-duo-greenDark w-full">
-                            開始測驗
+                        <h3 class="text-2xl font-extrabold text-slate-900 mb-2">準備好開始專業能力模擬評測了嗎？</h3>
+                        <p class="text-slate-500 font-medium text-xs mb-8">系統將隨機抽選 10 題進行驗證，評估您的掌握程度與企業徽章晉升積分。</p>
+                        <button onclick="startQuiz()" class="px-8 py-3.5 bg-blue-700 hover:bg-blue-800 text-white font-bold text-base rounded-xl shadow transition w-full">
+                            開始模擬測驗
                         </button>
                     </div>
 
-                    <!-- Active Quiz Interface -->
-                    <div id="quizActiveArea" class="hidden space-y-6 max-w-2xl mx-auto">
-                        <!-- Header / Progress Bar -->
-                        <div class="flex items-center gap-4">
-                            <button onclick="resetQuiz()" class="text-slate-400 hover:text-slate-600 font-bold text-lg"><i class="fa-solid fa-xmark"></i></button>
-                            <div class="flex-1 bg-slate-200 h-5 rounded-full overflow-hidden p-1">
-                                <div id="quizProgressBar" class="bg-duo-green h-full rounded-full transition-all duration-300 w-0"></div>
+                    <!-- Active Quiz Area -->
+                    <div id="quizActiveArea" class="hidden space-y-6 max-w-3xl mx-auto">
+                        <div class="flex items-center gap-4 bg-white p-4 rounded-xl border border-corp-border shadow-sm">
+                            <button onclick="resetQuiz()" class="text-slate-400 hover:text-slate-600 font-bold"><i class="fa-solid fa-xmark text-lg"></i></button>
+                            <div class="flex-1 bg-corp-bg h-3 rounded-full overflow-hidden border border-corp-border">
+                                <div id="quizProgressBar" class="bg-blue-600 h-full transition-all duration-300 w-0"></div>
                             </div>
-                            <span id="quizCounterText" class="font-extrabold text-slate-600 text-sm">1 / 10</span>
+                            <span id="quizCounterText" class="font-bold text-slate-700 text-xs">1 / 10</span>
                         </div>
 
-                        <!-- Question Card -->
-                        <div class="bg-white p-6 sm:p-8 rounded-3xl border-4 border-slate-200 shadow-sm space-y-6">
-                            <h3 id="quizQuestionTitle" class="text-xl font-extrabold text-slate-800 leading-snug">
+                        <div class="bg-white p-8 rounded-2xl border border-corp-border shadow-sm space-y-6">
+                            <h3 id="quizQuestionTitle" class="text-lg font-bold text-slate-900 leading-snug">
                                 題目載入中...
                             </h3>
 
@@ -287,153 +308,120 @@
                         </div>
 
                         <!-- Feedback Footer Bar -->
-                        <div id="quizFeedbackBar" class="hidden p-4 rounded-2xl border-2 flex items-center justify-between">
+                        <div id="quizFeedbackBar" class="hidden p-4 rounded-xl border flex items-center justify-between">
                             <div class="flex items-center gap-3">
-                                <div id="feedbackIcon" class="w-10 h-10 rounded-full flex items-center justify-center text-white font-black text-xl"></div>
+                                <div id="feedbackIcon" class="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-lg"></div>
                                 <div>
-                                    <h4 id="feedbackTitle" class="font-black text-lg"></h4>
-                                    <p id="feedbackText" class="text-xs font-bold"></p>
+                                    <h4 id="feedbackTitle" class="font-bold text-sm"></h4>
+                                    <p id="feedbackText" class="text-xs font-medium"></p>
                                 </div>
                             </div>
-                            <button id="nextQuestionBtn" onclick="nextQuestion()" class="duo-btn px-6 py-3 font-extrabold text-white rounded-xl shadow-duo">
+                            <button id="nextQuestionBtn" onclick="nextQuestion()" class="px-5 py-2.5 font-bold text-xs text-white rounded-lg shadow">
                                 下一題
                             </button>
                         </div>
                     </div>
 
                     <!-- Quiz Result Summary -->
-                    <div id="quizResultArea" class="hidden text-center py-8 px-4 max-w-lg mx-auto bg-slate-50 rounded-3xl border-2 border-slate-200 shadow-sm space-y-6">
-                        <div class="w-24 h-24 bg-duo-yellow rounded-full flex items-center justify-center mx-auto shadow-duo shadow-duo-yellowDark text-white text-4xl">
-                            <i class="fa-solid fa-crown"></i>
+                    <div id="quizResultArea" class="hidden text-center py-12 px-6 max-w-lg mx-auto bg-white rounded-2xl border border-corp-border shadow-sm space-y-6">
+                        <div class="w-20 h-20 bg-amber-500 text-white rounded-2xl flex items-center justify-center mx-auto shadow text-3xl">
+                            <i class="fa-solid fa-trophy"></i>
                         </div>
                         <div>
-                            <h3 class="text-3xl font-black text-slate-800">測驗完成！</h3>
-                            <p id="resultSubtitle" class="text-slate-500 font-bold text-sm mt-1">你的表現太優秀了！</p>
+                            <h3 class="text-2xl font-bold text-slate-900">評測完成！</h3>
+                            <p id="resultSubtitle" class="text-slate-500 font-medium text-xs mt-1">恭喜您完成本次能力檢定測驗</p>
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
-                            <div class="bg-white p-4 rounded-2xl border-2 border-slate-200">
-                                <div class="text-slate-400 font-bold text-xs">總得分</div>
-                                <div id="resultScore" class="text-3xl font-black text-duo-green">0/10</div>
+                            <div class="bg-corp-bg p-4 rounded-xl border border-corp-border">
+                                <div class="text-slate-500 font-bold text-xs">總得分</div>
+                                <div id="resultScore" class="text-3xl font-black text-slate-900 mt-1">0/10</div>
                             </div>
-                            <div class="bg-white p-4 rounded-2xl border-2 border-slate-200">
-                                <div class="text-slate-400 font-bold text-xs">正確率</div>
-                                <div id="resultAccuracy" class="text-3xl font-black text-duo-blue">0%</div>
+                            <div class="bg-corp-bg p-4 rounded-xl border border-corp-border">
+                                <div class="text-slate-500 font-bold text-xs">正確率</div>
+                                <div id="resultAccuracy" class="text-3xl font-black text-blue-600 mt-1">0%</div>
                             </div>
                         </div>
 
-                        <button onclick="startQuiz()" class="duo-btn w-full py-4 bg-duo-green text-white font-black text-lg rounded-2xl shadow-duo shadow-duo-greenDark">
-                            再測驗一次
+                        <button onclick="startQuiz()" class="w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm rounded-xl shadow transition">
+                            再次進行評測
                         </button>
                     </div>
                 </section>
 
-                <!-- Page 3: Badges & Achievements (徽章) -->
+                <!-- Page 4 (原 Page 3): Badges & Achievements (徽章) -->
                 <section id="page-badges" class="page-content hidden space-y-6">
-                    <!-- Progress Chart Card -->
-                    <div class="bg-slate-50 p-4 rounded-3xl border-2 border-slate-200 grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                    <div class="bg-white p-5 rounded-xl border border-corp-border shadow-sm grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
                         <div class="md:col-span-2 space-y-2">
-                            <h3 class="font-extrabold text-slate-800 text-lg"><i class="fa-solid fa-chart-line text-duo-blue me-2"></i>個人成就成就數據圖表</h3>
+                            <h3 class="font-bold text-slate-900 text-sm"><i class="fa-solid fa-chart-line text-blue-600 me-2"></i>學習成果數據統計</h3>
                             <div class="h-44 w-full">
                                 <canvas id="badgeStatsChart"></canvas>
                             </div>
                         </div>
-                        <div class="bg-white p-4 rounded-2xl border-2 border-slate-200 space-y-3">
+                        <div class="bg-corp-bg p-4 rounded-xl border border-corp-border space-y-4">
                             <div class="text-center">
-                                <span class="text-xs font-bold text-slate-400">目前連續天數</span>
-                                <div id="badgeStreakDays" class="text-3xl font-black text-duo-yellow">1 天</div>
+                                <span class="text-xs font-bold text-slate-500">連續學習天數</span>
+                                <div id="badgeStreakDays" class="text-3xl font-black text-amber-600 mt-1">1 天</div>
                             </div>
-                            <div class="border-t border-slate-100 pt-2 text-center">
-                                <span class="text-xs font-bold text-slate-400">100% 滿分總次數</span>
-                                <div id="badgePerfectCount" class="text-3xl font-black text-duo-green">0 次</div>
+                            <div class="border-t border-corp-border pt-3 text-center">
+                                <span class="text-xs font-bold text-slate-500">100% 滿分評測次數</span>
+                                <div id="badgePerfectCount" class="text-3xl font-black text-emerald-600 mt-1">0 次</div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Streak Badges Section -->
+                    <!-- Streak Badges -->
                     <div>
-                        <h3 class="font-black text-lg text-slate-800 mb-3 flex items-center gap-2">
-                            <i class="fa-solid fa-fire text-duo-yellow"></i> 連續登入挑戰徽章 (1 ~ 1000天)
+                        <h3 class="font-bold text-sm text-slate-900 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-fire text-amber-500"></i> 連續天數成就勳章 (1 ~ 1000天)
                         </h3>
                         <div id="streakBadgesGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                            <!-- Populated dynamically -->
+                            <!-- Dynamic -->
                         </div>
                     </div>
 
-                    <!-- Perfect Score Badges Section -->
+                    <!-- Perfect Score Badges -->
                     <div>
-                        <h3 class="font-black text-lg text-slate-800 mb-3 flex items-center gap-2">
-                            <i class="fa-solid fa-bullseye text-duo-red"></i> 答題全對滿分徽章 (1 ~ 10000次)
+                        <h3 class="font-bold text-sm text-slate-900 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-bullseye text-red-500"></i> 滿分評測解鎖勳章 (1 ~ 10000次)
                         </h3>
                         <div id="perfectBadgesGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                            <!-- Populated dynamically -->
+                            <!-- Dynamic -->
                         </div>
                     </div>
                 </section>
 
-                <!-- Page 4: Leaderboard (排行) -->
-                <section id="page-leaderboard" class="page-content hidden space-y-6">
-                    <div class="bg-amber-50 p-4 rounded-2xl border-2 border-amber-200 flex items-center justify-between">
+                <!-- Page 5 (原 Page 4): Leaderboard (排行) -->
+                <section id="page-leaderboard" class="page-content hidden space-y-5">
+                    <div class="bg-white p-4 rounded-xl border border-corp-border shadow-sm flex items-center justify-between">
                         <div class="flex items-center gap-3">
-                            <i class="fa-solid fa-ranking-star text-duo-yellow text-3xl"></i>
+                            <div class="w-10 h-10 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-lg">
+                                <i class="fa-solid fa-trophy"></i>
+                            </div>
                             <div>
-                                <h3 class="font-extrabold text-slate-800">全服玩家榮譽榜</h3>
-                                <p class="text-xs text-slate-500 font-bold">根據滿分次數、連續天數與累積經驗值綜合排名</p>
+                                <h3 class="font-bold text-slate-900 text-sm">企業學習與答題榮譽榜</h3>
+                                <p class="text-xs text-slate-500">綜合評比滿分次數、連續學習紀錄與知識累積度</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="bg-white rounded-3xl border-2 border-slate-200 overflow-hidden">
+                    <div class="bg-white rounded-xl border border-corp-border shadow-sm overflow-hidden">
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse">
                                 <thead>
-                                    <tr class="bg-slate-100 text-slate-500 font-black text-xs uppercase border-b-2 border-slate-200">
-                                        <th class="p-4">排名</th>
-                                        <th class="p-4">玩家名稱</th>
-                                        <th class="p-4">連續天數</th>
-                                        <th class="p-4">滿分 10/10 次數</th>
-                                        <th class="p-4">稱號/徽章數</th>
+                                    <tr class="bg-corp-sidebar text-slate-600 font-bold text-xs border-b border-corp-border">
+                                        <th class="p-4">名次</th>
+                                        <th class="p-4">成員名稱</th>
+                                        <th class="p-4">連續學習</th>
+                                        <th class="p-4">滿分評測次數</th>
+                                        <th class="p-4">頭銜 / 職稱</th>
                                     </tr>
                                 </thead>
-                                <tbody id="leaderboardTbody" class="divide-y border-slate-100 font-bold text-slate-700 text-sm">
-                                    <!-- Populated dynamically -->
+                                <tbody id="leaderboardTbody" class="divide-y divide-corp-border font-medium text-slate-800 text-xs">
+                                    <!-- Dynamic -->
                                 </tbody>
                             </table>
                         </div>
-                    </div>
-                </section>
-
-                <!-- Page 5: Question Bank (題庫) -->
-                <section id="page-questionBank" class="page-content hidden space-y-6">
-                    <!-- Bank Toolbar -->
-                    <div class="flex flex-wrap items-center justify-between gap-3 bg-slate-50 p-4 rounded-2xl border-2 border-slate-200">
-                        <div class="flex-1 min-w-[200px]">
-                            <div class="relative">
-                                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400"></i>
-                                <input type="text" id="bankSearchInput" oninput="filterQuestionBank()" placeholder="搜尋關鍵字或題目..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-slate-200 font-bold text-slate-700 focus:outline-none focus:border-duo-blue text-sm">
-                            </div>
-                        </div>
-
-                        <div class="flex items-center gap-2">
-                            <label class="duo-btn px-4 py-2.5 bg-duo-blue text-white rounded-xl font-extrabold text-xs shadow-duo shadow-duo-blueDark cursor-pointer flex items-center gap-1.5">
-                                <i class="fa-solid fa-file-import"></i> 匯入 JSON 題庫
-                                <input type="file" id="jsonFileInput" accept=".json" onchange="importJSONQuestionBank(event)" class="hidden">
-                            </label>
-                            <button onclick="openAddQuestionModal()" class="duo-btn px-4 py-2.5 bg-duo-green text-white rounded-xl font-extrabold text-xs shadow-duo shadow-duo-greenDark flex items-center gap-1.5">
-                                <i class="fa-solid fa-plus"></i> 新增題目
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Question Count Badge -->
-                    <div class="flex justify-between items-center px-1">
-                        <span id="bankCountBadge" class="text-xs font-black text-slate-400 uppercase">總計 0 題</span>
-                        <button onclick="resetDefaultQuestionBank()" class="text-xs font-bold text-duo-red hover:underline">恢復預設題庫</button>
-                    </div>
-
-                    <!-- Question Cards Grid -->
-                    <div id="questionBankGrid" class="space-y-3">
-                        <!-- Populated dynamically -->
                     </div>
                 </section>
 
@@ -442,53 +430,54 @@
     </div>
 
     <!-- Add Question Modal -->
-    <div id="addQuestionModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-        <div class="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border-4 border-slate-200 space-y-4">
-            <div class="flex justify-between items-center">
-                <h3 class="text-xl font-black text-slate-800">新增自訂題目</h3>
-                <button onclick="closeAddQuestionModal()" class="text-slate-400 hover:text-slate-600 font-bold text-lg"><i class="fa-solid fa-xmark"></i></button>
+    <div id="addQuestionModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl border border-corp-border space-y-4">
+            <div class="flex justify-between items-center pb-2 border-b border-corp-border">
+                <h3 class="text-base font-bold text-slate-900">新增專業知識題目</h3>
+                <button onclick="closeAddQuestionModal()" class="text-slate-400 hover:text-slate-600 font-bold"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <form onsubmit="handleAddQuestionSubmit(event)" class="space-y-3">
                 <div>
-                    <label class="block text-xs font-black uppercase text-slate-400 mb-1">題目內容</label>
-                    <input type="text" id="newQQuestion" required placeholder="例如：日本的法定義務教育為幾年？" class="w-full px-4 py-2.5 rounded-xl border-2 border-slate-200 font-bold text-slate-700 focus:outline-none focus:border-duo-blue text-sm">
+                    <label class="block text-xs font-bold text-slate-500 mb-1">題目敘述</label>
+                    <input type="text" id="newQQuestion" required placeholder="請輸入題目內容..." class="w-full px-3 py-2 rounded-lg border border-corp-border font-medium text-slate-800 focus:outline-none focus:border-blue-600 text-xs">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 mb-1">選項 A</label>
+                        <input type="text" id="newQOpt0" required placeholder="選項 1" class="w-full px-3 py-1.5 rounded-lg border border-corp-border font-medium text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 mb-1">選項 B</label>
+                        <input type="text" id="newQOpt1" required placeholder="選項 2" class="w-full px-3 py-1.5 rounded-lg border border-corp-border font-medium text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 mb-1">選項 C</label>
+                        <input type="text" id="newQOpt2" required placeholder="選項 3" class="w-full px-3 py-1.5 rounded-lg border border-corp-border font-medium text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 mb-1">選項 D</label>
+                        <input type="text" id="newQOpt3" required placeholder="選項 4" class="w-full px-3 py-1.5 rounded-lg border border-corp-border font-medium text-xs">
+                    </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-black uppercase text-slate-400 mb-1">選項 A</label>
-                    <input type="text" id="newQOpt0" required placeholder="選項 1" class="w-full px-3 py-2 rounded-xl border-2 border-slate-200 font-bold text-slate-700 text-sm">
-                </div>
-                <div>
-                    <label class="block text-xs font-black uppercase text-slate-400 mb-1">選項 B</label>
-                    <input type="text" id="newQOpt1" required placeholder="選項 2" class="w-full px-3 py-2 rounded-xl border-2 border-slate-200 font-bold text-slate-700 text-sm">
-                </div>
-                <div>
-                    <label class="block text-xs font-black uppercase text-slate-400 mb-1">選項 C</label>
-                    <input type="text" id="newQOpt2" required placeholder="選項 3" class="w-full px-3 py-2 rounded-xl border-2 border-slate-200 font-bold text-slate-700 text-sm">
-                </div>
-                <div>
-                    <label class="block text-xs font-black uppercase text-slate-400 mb-1">選項 D</label>
-                    <input type="text" id="newQOpt3" required placeholder="選項 4" class="w-full px-3 py-2 rounded-xl border-2 border-slate-200 font-bold text-slate-700 text-sm">
-                </div>
-                <div>
-                    <label class="block text-xs font-black uppercase text-slate-400 mb-1">正確答案 (需完全相符上述其中一個選項)</label>
-                    <input type="text" id="newQAnswer" required placeholder="請填寫正確答案的文字" class="w-full px-4 py-2.5 rounded-xl border-2 border-slate-200 font-bold text-slate-700 focus:outline-none focus:border-duo-green text-sm">
+                    <label class="block text-xs font-bold text-slate-500 mb-1">正確答案 (需文字完全一致)</label>
+                    <input type="text" id="newQAnswer" required placeholder="填寫上方其中一個精確選項" class="w-full px-3 py-2 rounded-lg border border-corp-border font-medium text-slate-800 focus:outline-none focus:border-emerald-600 text-xs">
                 </div>
                 <div class="pt-2">
-                    <button type="submit" class="duo-btn w-full py-3 bg-duo-green text-white font-extrabold rounded-xl shadow-duo shadow-duo-greenDark">
-                        儲存題目
+                    <button type="submit" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg text-xs shadow transition">
+                        儲存並新增至題庫
                     </button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Firebase Modular Setup Script -->
+    <!-- Firebase Setup Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getDatabase, ref, set, get, onValue, child } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
 
-        // Firebase Configuration (Config provided)
         const firebaseConfig = {
             apiKey: "AIzaSyCR5cuyM9H0LP9g7DfgvvYiZVPYHQqer-g",
             authDomain: "knowleagek.firebaseapp.com",
@@ -499,7 +488,6 @@
             databaseURL: "https://knowleagek-default-rtdb.firebaseio.com"
         };
 
-        // Initialize Firebase
         let app, auth, db;
         try {
             app = initializeApp(firebaseConfig);
@@ -513,19 +501,15 @@
             window.isFirebaseReady = false;
         }
 
-        // Global State & Firebase Auth listener
         window.currentUser = null;
         window.authMode = 'login';
 
         if (window.isFirebaseReady) {
-            // Monitor Online Status
             const connectedRef = ref(db, ".info/connected");
             onValue(connectedRef, (snap) => {
-                const isConnected = snap.val() === true;
-                updateConnectionStatus(isConnected);
+                updateConnectionStatus(snap.val() === true);
             });
 
-            // Monitor Auth State
             onAuthStateChanged(auth, async (user) => {
                 if (user) {
                     window.currentUser = {
@@ -544,59 +528,82 @@
         }
     </script>
 
-    <!-- Application Main Logic -->
+    <!-- Application Logic Script -->
     <script>
-        // Default Sample Quiz Database
+        // 預設題庫 (附帶初始簽名次數 0)
         const defaultQuestions = [
-            { id: 1, question: "請問下列哪一座城市是「日本」的法定首都？", options: ["蘇瓦", "加拉加斯", "太子港", "東京"], answer: "東京" },
-            { id: 2, question: "世界上陸地面積最大的國家是哪一個？", options: ["加拿大", "俄羅斯", "中國", "美國"], answer: "俄羅斯" },
-            { id: 3, question: "人體中最大的器官是什麼？", options: ["心臟", "肝臟", "皮膚", "肺臟"], answer: "皮膚" },
-            { id: 4, question: "元素週期表中化學符號「Au」代表什麼元素？", options: ["銀", "銅", "鐵", "黃金"], answer: "黃金" },
-            { id: 5, question: "太陽系中體積最大的行星是哪一顆？", options: ["木星", "土星", "海王星", "天王星"], answer: "木星" },
-            { id: 6, question: "光速在真空中傳播的速度大約是多少？", options: ["每秒 30 萬公里", "每秒 15 萬公里", "每秒 3 萬公里", "每秒 300 公里"], answer: "每秒 30 萬公里" },
-            { id: 7, question: "「相對論」是由哪一位著名物理學家提出的？", options: ["牛頓", "愛因斯坦", "伽利略", "居禮夫人"], answer: "愛因斯坦" },
-            { id: 8, question: "台灣最高的山峰是哪一座？", options: ["雪山", "玉山", "南湖大山", "奇萊山"], answer: "玉山" },
-            { id: 9, question: "電腦科學中「CPU」的全稱是什麼？", options: ["Central Processing Unit", "Central Performance Unit", "Control Program Unit", "Core Power Unit"], answer: "Central Processing Unit" },
-            { id: 10, question: "義大利文藝復興時期的名畫《蒙娜麗莎》是由誰繪製的？", options: ["梵谷", "畢卡索", "達文西", "米開朗基羅"], answer: "達文西" },
-            { id: 11, question: "奧林匹克運動會五環標誌中沒有包含下列哪種顏色？", options: ["藍色", "黃色", "黑色", "紫色"], answer: "紫色" },
-            { id: 12, question: "地球大氣層中含量最多的氣體是什麼？", options: ["氧氣", "二氧化碳", "氮氣", "氫氣"], answer: "氮氣" }
+            { id: 1, question: "請問下列哪一座城市是「日本」的法定首都？", options: ["蘇瓦", "加拉加斯", "太子港", "東京"], answer: "東京", readCount: 0 },
+            { id: 2, question: "世界上陸地面積最大的國家是哪一個？", options: ["加拿大", "俄羅斯", "中國", "美國"], answer: "俄羅斯", readCount: 0 },
+            { id: 3, question: "人體中最大的器官是什麼？", options: ["心臟", "肝臟", "皮膚", "肺臟"], answer: "皮膚", readCount: 0 },
+            { id: 4, question: "元素週期表中化學符號「Au」代表什麼元素？", options: ["銀", "銅", "鐵", "黃金"], answer: "黃金", readCount: 0 },
+            { id: 5, question: "太陽系中體積最大的行星是哪一顆？", options: ["木星", "土星", "海王星", "天王星"], answer: "木星", readCount: 0 },
+            { id: 6, question: "光速在真空中傳播的速度大約是多少？", options: ["每秒 30 萬公里", "每秒 15 萬公里", "每秒 3 萬公里", "每秒 300 公里"], answer: "每秒 30 萬公里", readCount: 0 },
+            { id: 7, question: "「相對論」是由哪一位著名物理學家提出的？", options: ["牛頓", "愛因斯坦", "伽利略", "居禮夫人"], answer: "愛因斯坦", readCount: 0 },
+            { id: 8, question: "台灣最高的山峰是哪一座？", options: ["雪山", "玉山", "南湖大山", "奇萊山"], answer: "玉山", readCount: 0 },
+            { id: 9, question: "電腦科學中「CPU」的全稱是什麼？", options: ["Central Processing Unit", "Central Performance Unit", "Control Program Unit", "Core Power Unit"], answer: "Central Processing Unit", readCount: 0 },
+            { id: 10, question: "義大利文藝復興時期的名畫《蒙娜麗莎》是由誰繪製的？", options: ["梵谷", "畢卡索", "達文西", "米開朗基羅"], answer: "達文西", readCount: 0 },
+            { id: 11, question: "奧林匹克運動會五環標誌中沒有包含下列哪種顏色？", options: ["藍色", "黃色", "黑色", "紫色"], answer: "紫色", readCount: 0 },
+            { id: 12, question: "地球大氣層中含量最多的氣體是什麼？", options: ["氧氣", "二氧化碳", "氮氣", "氫氣"], answer: "氮氣", readCount: 0 }
         ];
 
-        // Global User Profile State
+        // 20 種豐富的色調變化 (用於閱讀簽名次數 1 ~ 20 次)
+        const signatureColors = [
+            { bg: "bg-slate-100", text: "text-slate-600", border: "border-slate-300", label: "0 次簽名" }, // 0
+            { bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-300", label: "1 次簽名" }, // 1
+            { bg: "bg-green-100", text: "text-green-800", border: "border-green-400", label: "2 次簽名" },
+            { bg: "bg-teal-50", text: "text-teal-700", border: "border-teal-300", label: "3 次簽名" },
+            { bg: "bg-cyan-100", text: "text-cyan-800", border: "border-cyan-400", label: "4 次簽名" },
+            { bg: "bg-sky-100", text: "text-sky-800", border: "border-sky-400", label: "5 次簽名" },
+            { bg: "bg-blue-100", text: "text-blue-800", border: "border-blue-400", label: "6 次簽名" },
+            { bg: "bg-indigo-100", text: "text-indigo-800", border: "border-indigo-400", label: "7 次簽名" },
+            { bg: "bg-violet-100", text: "text-violet-800", border: "border-violet-400", label: "8 次簽名" },
+            { bg: "bg-purple-100", text: "text-purple-800", border: "border-purple-400", label: "9 次簽名" },
+            { bg: "bg-fuchsia-100", text: "text-fuchsia-800", border: "border-fuchsia-400", label: "10 次簽名" },
+            { bg: "bg-pink-100", text: "text-pink-800", border: "border-pink-400", label: "11 次簽名" },
+            { bg: "bg-rose-100", text: "text-rose-800", border: "border-rose-400", label: "12 次簽名" },
+            { bg: "bg-red-100", text: "text-red-800", border: "border-red-400", label: "13 次簽名" },
+            { bg: "bg-orange-100", text: "text-orange-800", border: "border-orange-400", label: "14 次簽名" },
+            { bg: "bg-amber-100", text: "text-amber-800", border: "border-amber-400", label: "15 次簽名" },
+            { bg: "bg-yellow-100", text: "text-yellow-800", border: "border-yellow-400", label: "16 次簽名" },
+            { bg: "bg-lime-100", text: "text-lime-800", border: "border-lime-400", label: "17 次簽名" },
+            { bg: "bg-stone-200", text: "text-stone-800", border: "border-stone-400", label: "18 次簽名" },
+            { bg: "bg-zinc-300", text: "text-zinc-900", border: "border-zinc-500", label: "19 次簽名" },
+            { bg: "bg-amber-400", text: "text-slate-950", border: "border-amber-600", label: "20 次簽名 (精通)" }  // 20 Max
+        ];
+
         let userData = {
-            fullName: "訪客玩家",
+            fullName: "企業主管",
             streakDays: 1,
             perfectQuizCount: 0,
             lastSaved: new Date().toLocaleString(),
-            customQuestions: []
+            customQuestions: [],
+            questionReadCounts: {} // 記錄每題簽名閱讀次數 { id: count }
         };
 
-        let currentActiveTab = 'study';
+        let currentActiveTab = 'questionBank'; // 預設開啟題庫頁面
         let currentQuizQuestions = [];
         let currentQuizIndex = 0;
         let currentQuizScore = 0;
 
-        // Initialize App
         window.addEventListener('load', () => {
-            loadStudyCards();
             renderQuestionBank();
+            loadStudyCards();
             renderBadges();
             initChart();
-            switchTab('study');
+            switchTab('questionBank'); // 預設載入題庫第一頁
         });
 
-        // Connection Status Updater
         function updateConnectionStatus(online) {
             const dot = document.getElementById('connDot');
             const txt = document.getElementById('connStatusText');
             if (online) {
-                dot.className = 'w-2.5 h-2.5 rounded-full bg-duo-green inline-block';
-                txt.textContent = '已即時連線 (RTDB)';
-                txt.className = 'text-duo-green font-extrabold';
+                dot.className = 'w-2 h-2 rounded-full bg-emerald-500 inline-block';
+                txt.textContent = '線上同步';
+                txt.className = 'text-emerald-700 font-bold';
             } else {
-                dot.className = 'w-2.5 h-2.5 rounded-full bg-amber-400 inline-block';
-                txt.textContent = '離線模式 (Local)';
-                txt.className = 'text-amber-500 font-bold';
+                dot.className = 'w-2 h-2 rounded-full bg-amber-500 inline-block';
+                txt.textContent = '單機模式';
+                txt.className = 'text-amber-600 font-bold';
             }
         }
 
@@ -606,7 +613,6 @@
             document.getElementById('lastSavedTime').textContent = now;
         }
 
-        // Firebase Sync Helpers
         async function saveDataToRTDB() {
             updateLastSavedTime();
             if (window.isFirebaseReady && window.firebaseDb && window.currentUser) {
@@ -619,7 +625,8 @@
                         streakDays: userData.streakDays,
                         perfectQuizCount: userData.perfectQuizCount,
                         lastSaved: userData.lastSaved,
-                        customQuestions: userData.customQuestions || []
+                        customQuestions: userData.customQuestions || [],
+                        questionReadCounts: userData.questionReadCounts || {}
                     });
                 } catch(e) {
                     console.error("RTDB save error:", e);
@@ -639,8 +646,8 @@
                         userData.streakDays = val.streakDays || 1;
                         userData.perfectQuizCount = val.perfectQuizCount || 0;
                         userData.customQuestions = val.customQuestions || [];
+                        userData.questionReadCounts = val.questionReadCounts || {};
                     } else {
-                        // Init new user entry
                         await saveDataToRTDB();
                     }
                 } catch(e) {
@@ -660,9 +667,7 @@
                     const data = snapshot.val();
                     const players = [];
                     if (data) {
-                        Object.keys(data).forEach(k => {
-                            players.push(data[k]);
-                        });
+                        Object.keys(data).forEach(k => players.push(data[k]));
                     }
                     renderLeaderboard(players);
                 });
@@ -670,14 +675,13 @@
         }
 
         function updateUserUI() {
-            document.getElementById('userNameDisplay').textContent = userData.fullName || "玩家";
-            document.getElementById('userEmailDisplay').textContent = window.currentUser ? window.currentUser.email : "Guest Mode";
+            document.getElementById('userNameDisplay').textContent = userData.fullName || "企業使用者";
+            document.getElementById('userEmailDisplay').textContent = window.currentUser ? window.currentUser.email : "Visitor Mode";
             document.getElementById('userAvatar').textContent = (userData.fullName || "P").charAt(0).toUpperCase();
             document.getElementById('badgeStreakDays').textContent = userData.streakDays + " 天";
             document.getElementById('badgePerfectCount').textContent = userData.perfectQuizCount + " 次";
         }
 
-        // Auth Tab Switcher
         function switchAuthTab(mode) {
             window.authMode = mode;
             const loginBtn = document.getElementById('tabLogin');
@@ -686,13 +690,13 @@
             const submitBtn = document.getElementById('authSubmitBtn');
 
             if (mode === 'login') {
-                loginBtn.className = "flex-1 py-2 rounded-xl text-sm font-bold text-slate-700 bg-white shadow-sm transition";
-                regBtn.className = "flex-1 py-2 rounded-xl text-sm font-bold text-slate-500 transition";
+                loginBtn.className = "flex-1 py-2 rounded-lg text-xs font-bold text-slate-800 bg-white shadow-sm transition";
+                regBtn.className = "flex-1 py-2 rounded-lg text-xs font-bold text-slate-500 transition";
                 nameGrp.classList.add('hidden');
                 submitBtn.textContent = '登入系統';
             } else {
-                regBtn.className = "flex-1 py-2 rounded-xl text-sm font-bold text-slate-700 bg-white shadow-sm transition";
-                loginBtn.className = "flex-1 py-2 rounded-xl text-sm font-bold text-slate-500 transition";
+                regBtn.className = "flex-1 py-2 rounded-lg text-xs font-bold text-slate-800 bg-white shadow-sm transition";
+                loginBtn.className = "flex-1 py-2 rounded-lg text-xs font-bold text-slate-500 transition";
                 nameGrp.classList.remove('hidden');
                 submitBtn.textContent = '註冊帳號';
             }
@@ -718,20 +722,20 @@
             try {
                 if (window.authMode === 'register') {
                     if (!fullName) throw new Error("請輸入真實姓名");
-                    const res = await createUserWithEmailAndPassword(window.firebaseAuth, email, password);
+                    await createUserWithEmailAndPassword(window.firebaseAuth, email, password);
                     userData.fullName = fullName;
                     await saveDataToRTDB();
                 } else {
                     await signInWithEmailAndPassword(window.firebaseAuth, email, password);
                 }
             } catch (err) {
-                errDiv.textContent = err.message || "驗證失敗，請檢查輸入內容";
+                errDiv.textContent = err.message || "驗證失敗，請確認輸入資訊";
                 errDiv.classList.remove('hidden');
             }
         }
 
         function guestLogin() {
-            userData.fullName = "訪客體驗者";
+            userData.fullName = "訪客主管";
             document.getElementById('authModal').classList.add('hidden');
             updateUserUI();
             updateConnectionStatus(false);
@@ -746,321 +750,109 @@
             document.getElementById('authModal').classList.remove('hidden');
         }
 
-        // Navigation Switcher
         function switchTab(tabId) {
             currentActiveTab = tabId;
             document.querySelectorAll('.page-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.nav-item').forEach(el => {
-                el.classList.remove('bg-slate-100', 'border-slate-300', 'text-slate-800');
-                el.classList.add('text-slate-500');
+                el.classList.remove('bg-white', 'shadow-sm', 'text-slate-900', 'border', 'border-corp-border');
+                el.classList.add('text-slate-600');
             });
 
             document.getElementById(`page-${tabId}`).classList.remove('hidden');
             const activeNav = document.getElementById(`nav-${tabId}`);
-            activeNav.classList.add('bg-slate-100', 'border-slate-300', 'text-slate-800');
+            activeNav.classList.add('bg-white', 'shadow-sm', 'text-slate-900', 'border', 'border-corp-border');
 
             const titles = {
-                study: ['學習頁面', '隨機 10 題複習'],
-                quiz: ['測驗模式', '全方位實力挑戰'],
-                badges: ['榮譽徽章', '解鎖成就里程碑'],
-                leaderboard: ['全球排行榜', '全服玩家榮譽排名'],
-                questionBank: ['知識題庫中心', '題庫瀏覽與管理']
+                questionBank: ['題庫中心', '題庫瀏覽、閱讀簽名與權限管理'],
+                study: ['知識學習', '卡牌翻轉與記憶強化'],
+                quiz: ['模擬評測', '企業能力檢定挑戰'],
+                badges: ['榮譽勳章', '成就紀錄與統計'],
+                leaderboard: ['績效排行', '全企業成員評比總榜']
             };
             document.getElementById('pageTitle').textContent = titles[tabId][0];
             document.getElementById('pageSubtitle').textContent = titles[tabId][1];
 
+            if (tabId === 'questionBank') renderQuestionBank();
             if (tabId === 'study') loadStudyCards();
             if (tabId === 'badges') updateChart();
         }
 
-        // Get Full Question Pool
         function getAllQuestions() {
-            return [...defaultQuestions, ...(userData.customQuestions || [])];
-        }
-
-        // --- PAGE 1: STUDY MODE (學習) ---
-        function loadStudyCards() {
-            const container = document.getElementById('studyCardsContainer');
-            container.innerHTML = '';
-            const pool = getAllQuestions();
-            const shuffled = [...pool].sort(() => 0.5 - Math.random()).slice(0, 10);
-
-            shuffled.forEach((q, idx) => {
-                const card = document.createElement('div');
-                card.className = "perspective-1000 h-48 cursor-pointer";
-                card.onclick = () => {
-                    const inner = card.querySelector('.card-inner');
-                    inner.classList.toggle('rotate-y-180');
-                };
-
-                card.innerHTML = `
-                    <div class="card-inner transform-style-3d transition-transform duration-500 relative w-full h-full">
-                        <!-- Front Face -->
-                        <div class="absolute inset-0 bg-white border-2 border-slate-200 rounded-2xl p-5 flex flex-col justify-between backface-hidden shadow-sm hover:border-duo-blue">
-                            <div class="flex justify-between items-center text-xs font-black text-slate-400">
-                                <span>FLASHCARD #${idx + 1}</span>
-                                <span class="text-duo-blue"><i class="fa-solid fa-rotate me-1"></i>點擊翻面</span>
-                            </div>
-                            <h4 class="font-black text-slate-800 text-lg leading-snug">${q.question}</h4>
-                            <div class="text-xs font-bold text-slate-400">包含 ${q.options.length} 個可選答案</div>
-                        </div>
-                        <!-- Back Face -->
-                        <div class="absolute inset-0 bg-duo-blue text-white rounded-2xl p-5 flex flex-col justify-between rotate-y-180 backface-hidden shadow-sm">
-                            <div class="text-xs font-black text-blue-100">正確答案</div>
-                            <div class="text-center my-auto">
-                                <div class="text-2xl font-black">${q.answer}</div>
-                            </div>
-                            <div class="text-xs font-medium text-blue-100 text-right">專業知識點歸納</div>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(card);
+            const list = [...defaultQuestions, ...(userData.customQuestions || [])];
+            // 結合閱讀簽名次數
+            list.forEach(q => {
+                q.readCount = userData.questionReadCounts[q.id] || 0;
             });
+            return list;
         }
 
-        // --- PAGE 2: QUIZ MODE (測驗) ---
-        function startQuiz() {
-            const pool = getAllQuestions();
-            currentQuizQuestions = [...pool].sort(() => 0.5 - Math.random()).slice(0, 10);
-            currentQuizIndex = 0;
-            currentQuizScore = 0;
-
-            document.getElementById('quizStartCard').classList.add('hidden');
-            document.getElementById('quizResultArea').classList.add('hidden');
-            document.getElementById('quizActiveArea').classList.remove('hidden');
-
-            renderQuizQuestion();
-        }
-
-        function resetQuiz() {
-            document.getElementById('quizStartCard').classList.remove('hidden');
-            document.getElementById('quizActiveArea').classList.add('hidden');
-            document.getElementById('quizResultArea').classList.add('hidden');
-        }
-
-        function renderQuizQuestion() {
-            const q = currentQuizQuestions[currentQuizIndex];
-            document.getElementById('quizProgressBar').style.width = `${((currentQuizIndex + 1) / 10) * 100}%`;
-            document.getElementById('quizCounterText').textContent = `${currentQuizIndex + 1} / 10`;
-            document.getElementById('quizQuestionTitle').textContent = q.question;
-            document.getElementById('quizFeedbackBar').classList.add('hidden');
-
-            const container = document.getElementById('quizOptionsContainer');
-            container.innerHTML = '';
-
-            q.options.forEach((opt) => {
-                const btn = document.createElement('button');
-                btn.className = "quiz-opt-btn duo-btn w-full p-4 rounded-2xl border-2 border-slate-200 text-left font-extrabold text-slate-700 hover:bg-slate-50 shadow-duo shadow-slate-200 transition";
-                btn.textContent = opt;
-                btn.onclick = () => handleQuizAnswer(opt, q.answer, btn);
-                container.appendChild(btn);
-            });
-        }
-
-        function handleQuizAnswer(selected, correct, selectedBtn) {
-            const buttons = document.querySelectorAll('.quiz-opt-btn');
-            buttons.forEach(b => b.disabled = true);
-
-            const fbBar = document.getElementById('quizFeedbackBar');
-            const fbIcon = document.getElementById('feedbackIcon');
-            const fbTitle = document.getElementById('feedbackTitle');
-            const fbText = document.getElementById('feedbackText');
-            const nextBtn = document.getElementById('nextQuestionBtn');
-
-            fbBar.classList.remove('hidden', 'bg-green-100', 'border-green-300', 'text-green-800', 'bg-red-100', 'border-red-300', 'text-red-800');
-
-            if (selected === correct) {
-                currentQuizScore++;
-                selectedBtn.className = "duo-btn w-full p-4 rounded-2xl border-2 border-duo-green bg-green-50 text-duo-green font-black shadow-duo shadow-duo-greenDark";
-                fbBar.classList.add('bg-green-100', 'border-green-300', 'text-green-800');
-                fbIcon.className = "w-10 h-10 rounded-full flex items-center justify-center text-white font-black text-xl bg-duo-green";
-                fbIcon.innerHTML = `<i class="fa-solid fa-check"></i>`;
-                fbTitle.textContent = "答對了！太厲害了！";
-                fbText.textContent = `最佳解答：${correct}`;
-                nextBtn.className = "duo-btn px-6 py-3 font-extrabold text-white rounded-xl shadow-duo bg-duo-green shadow-duo-greenDark";
-            } else {
-                selectedBtn.className = "duo-btn w-full p-4 rounded-2xl border-2 border-duo-red bg-red-50 text-duo-red font-black shadow-duo shadow-duo-redDark";
-                fbBar.classList.add('bg-red-100', 'border-red-300', 'text-red-800');
-                fbIcon.className = "w-10 h-10 rounded-full flex items-center justify-center text-white font-black text-xl bg-duo-red";
-                fbIcon.innerHTML = `<i class="fa-solid fa-xmark"></i>`;
-                fbTitle.textContent = "回答錯誤！";
-                fbText.textContent = `正確答案為：${correct}`;
-                nextBtn.className = "duo-btn px-6 py-3 font-extrabold text-white rounded-xl shadow-duo bg-duo-red shadow-duo-redDark";
-            }
-        }
-
-        function nextQuestion() {
-            currentQuizIndex++;
-            if (currentQuizIndex < 10) {
-                renderQuizQuestion();
-            } else {
-                finishQuiz();
-            }
-        }
-
-        function finishQuiz() {
-            document.getElementById('quizActiveArea').classList.add('hidden');
-            document.getElementById('quizResultArea').classList.remove('hidden');
-
-            document.getElementById('resultScore').textContent = `${currentQuizScore}/10`;
-            const accuracy = Math.round((currentQuizScore / 10) * 100);
-            document.getElementById('resultAccuracy').textContent = `${accuracy}%`;
-
-            // If Perfect Score
-            if (currentQuizScore === 10) {
-                userData.perfectQuizCount = (userData.perfectQuizCount || 0) + 1;
-                userData.streakDays = (userData.streakDays || 1) + 1;
-                saveDataToRTDB();
-                renderBadges();
-                updateUserUI();
-            }
-        }
-
-        // --- PAGE 3: BADGES & ACHIEVEMENTS (徽章) ---
-        const streakMilestones = [1, 3, 7, 30, 100, 365, 1000];
-        const perfectMilestones = [1, 5, 20, 100, 500, 1000, 10000];
-
-        function renderBadges() {
-            const streakGrid = document.getElementById('streakBadgesGrid');
-            const perfectGrid = document.getElementById('perfectBadgesGrid');
-
-            streakGrid.innerHTML = '';
-            perfectGrid.innerHTML = '';
-
-            // Streak Badges
-            streakMilestones.forEach(m => {
-                const unlocked = userData.streakDays >= m;
-                const card = document.createElement('div');
-                card.className = `p-4 rounded-2xl border-2 text-center transition ${unlocked ? 'bg-amber-50 border-amber-300 shadow-sm' : 'bg-slate-50 border-slate-200 opacity-60'}`;
-                card.innerHTML = `
-                    <div class="w-12 h-12 mx-auto mb-2 rounded-2xl flex items-center justify-center text-2xl ${unlocked ? 'bg-duo-yellow text-white shadow-duo shadow-duo-yellowDark' : 'bg-slate-200 text-slate-400'}">
-                        <i class="fa-solid fa-fire"></i>
-                    </div>
-                    <div class="font-black text-slate-800 text-sm">${m} 天挑戰</div>
-                    <div class="text-[10px] font-bold ${unlocked ? 'text-duo-yellow' : 'text-slate-400'} mt-1">
-                        ${unlocked ? '已成功解鎖' : `進度: ${userData.streakDays}/${m}`}
-                    </div>
-                `;
-                streakGrid.appendChild(card);
-            });
-
-            // Perfect Score Badges
-            perfectMilestones.forEach(m => {
-                const unlocked = userData.perfectQuizCount >= m;
-                const card = document.createElement('div');
-                card.className = `p-4 rounded-2xl border-2 text-center transition ${unlocked ? 'bg-green-50 border-green-300 shadow-sm' : 'bg-slate-50 border-slate-200 opacity-60'}`;
-                card.innerHTML = `
-                    <div class="w-12 h-12 mx-auto mb-2 rounded-2xl flex items-center justify-center text-2xl ${unlocked ? 'bg-duo-green text-white shadow-duo shadow-duo-greenDark' : 'bg-slate-200 text-slate-400'}">
-                        <i class="fa-solid fa-award"></i>
-                    </div>
-                    <div class="font-black text-slate-800 text-sm">滿分 ${m} 次</div>
-                    <div class="text-[10px] font-bold ${unlocked ? 'text-duo-green' : 'text-slate-400'} mt-1">
-                        ${unlocked ? '已成功解鎖' : `進度: ${userData.perfectQuizCount}/${m}`}
-                    </div>
-                `;
-                perfectGrid.appendChild(card);
-            });
-        }
-
-        // Chart.js Setup
-        let statsChart;
-        function initChart() {
-            const ctx = document.getElementById('badgeStatsChart').getContext('2d');
-            statsChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['連續登入天數', '100%滿分總次數', '自訂題庫數量'],
-                    datasets: [{
-                        label: '個人學習成效統計',
-                        data: [userData.streakDays, userData.perfectQuizCount, userData.customQuestions.length],
-                        backgroundColor: ['#ffc800', '#58cc02', '#1cb0f6'],
-                        borderRadius: 12
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { y: { beginAtZero: true } }
-                }
-            });
-        }
-
-        function updateChart() {
-            if (statsChart) {
-                statsChart.data.datasets[0].data = [userData.streakDays, userData.perfectQuizCount, userData.customQuestions.length];
-                statsChart.update();
-            }
-        }
-
-        // --- PAGE 4: LEADERBOARD (排行) ---
-        function renderLeaderboard(playersList = []) {
-            const tbody = document.getElementById('leaderboardTbody');
-            tbody.innerHTML = '';
-
-            // Default fallback list if none exists
-            let players = playersList.length > 0 ? playersList : [
-                { fullName: userData.fullName, streakDays: userData.streakDays, perfectQuizCount: userData.perfectQuizCount },
-                { fullName: "知識王者", streakDays: 45, perfectQuizCount: 88 },
-                { fullName: "學霸小明", streakDays: 20, perfectQuizCount: 30 },
-                { fullName: "挑戰者99", streakDays: 7, perfectQuizCount: 5 }
-            ];
-
-            // Sort by perfect score first, then streak
-            players.sort((a, b) => (b.perfectQuizCount || 0) - (a.perfectQuizCount || 0) || (b.streakDays || 0) - (a.streakDays || 0));
-
-            players.forEach((p, idx) => {
-                const tr = document.createElement('tr');
-                tr.className = idx < 3 ? "bg-amber-50/50" : "hover:bg-slate-50";
-
-                let rankBadge = `<span class="font-black text-slate-500">#${idx + 1}</span>`;
-                if (idx === 0) rankBadge = `<span class="w-7 h-7 rounded-full bg-duo-yellow text-white flex items-center justify-center font-black text-xs shadow-sm"><i class="fa-solid fa-crown"></i></span>`;
-                if (idx === 1) rankBadge = `<span class="w-7 h-7 rounded-full bg-slate-300 text-white flex items-center justify-center font-black text-xs shadow-sm">2</span>`;
-                if (idx === 2) rankBadge = `<span class="w-7 h-7 rounded-full bg-amber-600 text-white flex items-center justify-center font-black text-xs shadow-sm">3</span>`;
-
-                tr.innerHTML = `
-                    <td class="p-4">${rankBadge}</td>
-                    <td class="p-4 font-black text-slate-800">${p.fullName || '匿名玩家'}</td>
-                    <td class="p-4 text-duo-yellow"><i class="fa-solid fa-fire me-1"></i>${p.streakDays || 1} 天</td>
-                    <td class="p-4 text-duo-green"><i class="fa-solid fa-award me-1"></i>${p.perfectQuizCount || 0} 次</td>
-                    <td class="p-4"><span class="px-2.5 py-1 rounded-full text-xs font-black bg-slate-100 text-slate-600">Trivia Master</span></td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        // --- PAGE 5: QUESTION BANK (題庫) ---
+        // --- PAGE 1: QUESTION BANK (題庫 - 包含簽名次數與 0 次優先排序) ---
         function renderQuestionBank(filterTerm = '') {
             const grid = document.getElementById('questionBankGrid');
             grid.innerHTML = '';
-            const pool = getAllQuestions();
+            let pool = getAllQuestions();
 
-            const filtered = pool.filter(q => 
-                q.question.toLowerCase().includes(filterTerm.toLowerCase()) ||
-                q.options.some(o => o.toLowerCase().includes(filterTerm.toLowerCase()))
-            );
+            // 關鍵字過濾
+            if (filterTerm) {
+                pool = pool.filter(q => 
+                    q.question.toLowerCase().includes(filterTerm.toLowerCase()) ||
+                    q.options.some(o => o.toLowerCase().includes(filterTerm.toLowerCase()))
+                );
+            }
 
-            document.getElementById('bankCountBadge').textContent = `總計 ${filtered.length} 題`;
+            // 核心功能：依據閱讀簽名次數【升冪排序】，0次簽名的題目排在最上方
+            pool.sort((a, b) => (a.readCount || 0) - (b.readCount || 0));
 
-            filtered.forEach((q) => {
+            document.getElementById('bankCountBadge').textContent = `總計 ${pool.length} 題`;
+
+            pool.forEach((q) => {
+                const count = Math.min(q.readCount || 0, 20); // 上限 20 次
+                const styleObj = signatureColors[count] || signatureColors[20];
+
                 const card = document.createElement('div');
-                card.className = "bg-white p-4 rounded-2xl border-2 border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 shadow-sm hover:border-slate-300";
+                card.className = "bg-white p-4 rounded-xl border border-corp-border shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition hover:border-slate-300";
+                
                 card.innerHTML = `
-                    <div class="space-y-1">
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs font-black bg-slate-100 text-slate-500 px-2 py-0.5 rounded-lg">ID #${q.id}</span>
-                            <h4 class="font-extrabold text-slate-800">${q.question}</h4>
+                    <div class="space-y-1.5 flex-1">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded border border-slate-200">ID #${q.id}</span>
+                            <h4 class="font-bold text-slate-900 text-sm leading-snug">${q.question}</h4>
                         </div>
-                        <div class="text-xs font-bold text-slate-400 flex flex-wrap gap-2">
-                            ${q.options.map(o => `<span class="${o === q.answer ? 'text-duo-green font-black underline' : ''}">${o}</span>`).join(' • ')}
+                        <div class="text-xs text-slate-500 font-medium flex flex-wrap gap-2 pt-1">
+                            ${q.options.map(o => `<span class="${o === q.answer ? 'text-emerald-700 font-bold bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200' : ''}">${o}</span>`).join(' • ')}
                         </div>
                     </div>
-                    <span class="px-3 py-1 bg-green-50 text-duo-green border border-green-200 font-extrabold text-xs rounded-xl shrink-0">
-                        答案: ${q.answer}
-                    </span>
+
+                    <div class="flex items-center gap-3 shrink-0 w-full md:w-auto justify-between md:justify-end border-t md:border-t-0 border-corp-border/60 pt-2 md:pt-0">
+                        <!-- 簽名次數 badge -->
+                        <div class="px-3 py-1 rounded-lg border text-xs font-bold ${styleObj.bg} ${styleObj.text} ${styleObj.border} flex items-center gap-1.5">
+                            <i class="fa-solid fa-pen-nib"></i>
+                            <span>${count} 次簽名</span>
+                        </div>
+
+                        <!-- 按一下簽名按鈕 -->
+                        <button onclick="signQuestionRead(${q.id})" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-amber-400 font-bold text-xs rounded-lg shadow-sm flex items-center gap-1 transition active:scale-95">
+                            <i class="fa-solid fa-signature"></i> ✍️ 簽名紀錄
+                        </button>
+                    </div>
                 `;
                 grid.appendChild(card);
             });
+        }
+
+        // 點擊簽名增加閱讀次數並重新自動排序
+        function signQuestionRead(id) {
+            if (!userData.questionReadCounts) userData.questionReadCounts = {};
+            const current = userData.questionReadCounts[id] || 0;
+            if (current < 20) {
+                userData.questionReadCounts[id] = current + 1;
+            } else {
+                alert("此題目已達最大 20 次簽名上限！");
+                return;
+            }
+            saveDataToRTDB();
+            // 重新渲染並執行 0 次簽名排最上面的動態排序
+            renderQuestionBank(document.getElementById('bankSearchInput').value);
         }
 
         function filterQuestionBank() {
@@ -1095,7 +887,8 @@
                 id: Date.now(),
                 question: qText,
                 options: opts,
-                answer: ans
+                answer: ans,
+                readCount: 0
             };
 
             userData.customQuestions.push(newQ);
@@ -1113,57 +906,291 @@
                 try {
                     const data = JSON.parse(evt.target.result);
                     const items = Array.isArray(data) ? data : [data];
+                    items.forEach(i => i.readCount = i.readCount || 0);
                     userData.customQuestions.push(...items);
                     saveDataToRTDB();
                     renderQuestionBank();
-                    alert(`成功匯入 ${items.length} 題知識題目！`);
+                    alert(`成功匯入 ${items.length} 筆專業題目！`);
                 } catch(err) {
-                    alert("JSON 格式解析失敗，請確認檔案格式！");
+                    alert("JSON 格式解析失敗，請確認內容格式！");
                 }
             };
             reader.readAsText(file);
         }
 
-        function resetDefaultQuestionBank() {
-            if (confirm("確定要清除所有自訂題目並恢復預設題庫嗎？")) {
-                userData.customQuestions = [];
-                saveDataToRTDB();
-                renderQuestionBank();
+        // --- PAGE 2: STUDY MODE ---
+        function loadStudyCards() {
+            const container = document.getElementById('studyCardsContainer');
+            container.innerHTML = '';
+            const pool = getAllQuestions();
+            const shuffled = [...pool].sort(() => 0.5 - Math.random()).slice(0, 10);
+
+            shuffled.forEach((q, idx) => {
+                const card = document.createElement('div');
+                card.className = "perspective-1000 h-44 cursor-pointer";
+                card.onclick = () => {
+                    const inner = card.querySelector('.card-inner');
+                    inner.classList.toggle('rotate-y-180');
+                };
+
+                card.innerHTML = `
+                    <div class="card-inner transform-style-3d transition-transform duration-500 relative w-full h-full">
+                        <div class="absolute inset-0 bg-white border border-corp-border rounded-xl p-5 flex flex-col justify-between backface-hidden shadow-sm hover:border-slate-400">
+                            <div class="flex justify-between items-center text-xs font-bold text-slate-400">
+                                <span>FLASHCARD #${idx + 1}</span>
+                                <span class="text-blue-600"><i class="fa-solid fa-rotate me-1"></i>點擊翻面</span>
+                            </div>
+                            <h4 class="font-bold text-slate-900 text-base leading-snug">${q.question}</h4>
+                            <div class="text-[11px] font-semibold text-slate-400">可選項目：${q.options.length} 個</div>
+                        </div>
+                        <div class="absolute inset-0 bg-slate-900 text-white rounded-xl p-5 flex flex-col justify-between rotate-y-180 backface-hidden shadow-sm">
+                            <div class="text-xs font-bold text-amber-400">解答解析</div>
+                            <div class="text-center my-auto">
+                                <div class="text-xl font-bold">${q.answer}</div>
+                            </div>
+                            <div class="text-[10px] font-medium text-slate-400 text-right">企業專業知識歸納</div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // --- PAGE 3: QUIZ MODE ---
+        function startQuiz() {
+            const pool = getAllQuestions();
+            currentQuizQuestions = [...pool].sort(() => 0.5 - Math.random()).slice(0, 10);
+            currentQuizIndex = 0;
+            currentQuizScore = 0;
+
+            document.getElementById('quizStartCard').classList.add('hidden');
+            document.getElementById('quizResultArea').classList.add('hidden');
+            document.getElementById('quizActiveArea').classList.remove('hidden');
+
+            renderQuizQuestion();
+        }
+
+        function resetQuiz() {
+            document.getElementById('quizStartCard').classList.remove('hidden');
+            document.getElementById('quizActiveArea').classList.add('hidden');
+            document.getElementById('quizResultArea').classList.add('hidden');
+        }
+
+        function renderQuizQuestion() {
+            const q = currentQuizQuestions[currentQuizIndex];
+            document.getElementById('quizProgressBar').style.width = `${((currentQuizIndex + 1) / 10) * 100}%`;
+            document.getElementById('quizCounterText').textContent = `${currentQuizIndex + 1} / 10`;
+            document.getElementById('quizQuestionTitle').textContent = q.question;
+            document.getElementById('quizFeedbackBar').classList.add('hidden');
+
+            const container = document.getElementById('quizOptionsContainer');
+            container.innerHTML = '';
+
+            q.options.forEach((opt) => {
+                const btn = document.createElement('button');
+                btn.className = "quiz-opt-btn w-full p-3.5 rounded-xl border border-corp-border text-left font-bold text-xs text-slate-800 bg-corp-bg hover:bg-white transition";
+                btn.textContent = opt;
+                btn.onclick = () => handleQuizAnswer(opt, q.answer, btn);
+                container.appendChild(btn);
+            });
+        }
+
+        function handleQuizAnswer(selected, correct, selectedBtn) {
+            const buttons = document.querySelectorAll('.quiz-opt-btn');
+            buttons.forEach(b => b.disabled = true);
+
+            const fbBar = document.getElementById('quizFeedbackBar');
+            const fbIcon = document.getElementById('feedbackIcon');
+            const fbTitle = document.getElementById('feedbackTitle');
+            const fbText = document.getElementById('feedbackText');
+            const nextBtn = document.getElementById('nextQuestionBtn');
+
+            fbBar.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-300', 'text-emerald-900', 'bg-rose-50', 'border-rose-300', 'text-rose-900');
+
+            if (selected === correct) {
+                currentQuizScore++;
+                selectedBtn.className = "w-full p-3.5 rounded-xl border-2 border-emerald-600 bg-emerald-50 text-emerald-900 font-bold text-xs";
+                fbBar.classList.add('bg-emerald-50', 'border-emerald-300', 'text-emerald-900');
+                fbIcon.className = "w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-base bg-emerald-600";
+                fbIcon.innerHTML = `<i class="fa-solid fa-check"></i>`;
+                fbTitle.textContent = "回答正確！";
+                fbText.textContent = `正確標準解答：${correct}`;
+                nextBtn.className = "px-5 py-2.5 font-bold text-xs text-white rounded-lg shadow bg-emerald-700 hover:bg-emerald-800";
+            } else {
+                selectedBtn.className = "w-full p-3.5 rounded-xl border-2 border-rose-600 bg-rose-50 text-rose-900 font-bold text-xs";
+                fbBar.classList.add('bg-rose-50', 'border-rose-300', 'text-rose-900');
+                fbIcon.className = "w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-base bg-rose-600";
+                fbIcon.innerHTML = `<i class="fa-solid fa-xmark"></i>`;
+                fbTitle.textContent = "回答錯誤！";
+                fbText.textContent = `正確標準解答為：${correct}`;
+                nextBtn.className = "px-5 py-2.5 font-bold text-xs text-white rounded-lg shadow bg-rose-700 hover:bg-rose-800";
             }
         }
 
-        // --- EXPORT FUNCTIONALITIES ---
-        // 1. One-Click Excel Export (SheetJS)
+        function nextQuestion() {
+            currentQuizIndex++;
+            if (currentQuizIndex < 10) {
+                renderQuizQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function finishQuiz() {
+            document.getElementById('quizActiveArea').classList.add('hidden');
+            document.getElementById('quizResultArea').classList.remove('hidden');
+
+            document.getElementById('resultScore').textContent = `${currentQuizScore}/10`;
+            const accuracy = Math.round((currentQuizScore / 10) * 100);
+            document.getElementById('resultAccuracy').textContent = `${accuracy}%`;
+
+            if (currentQuizScore === 10) {
+                userData.perfectQuizCount = (userData.perfectQuizCount || 0) + 1;
+                userData.streakDays = (userData.streakDays || 1) + 1;
+                saveDataToRTDB();
+                renderBadges();
+                updateUserUI();
+            }
+        }
+
+        // --- PAGE 4: BADGES ---
+        const streakMilestones = [1, 3, 7, 30, 100, 365, 1000];
+        const perfectMilestones = [1, 5, 20, 100, 500, 1000, 10000];
+
+        function renderBadges() {
+            const streakGrid = document.getElementById('streakBadgesGrid');
+            const perfectGrid = document.getElementById('perfectBadgesGrid');
+
+            streakGrid.innerHTML = '';
+            perfectGrid.innerHTML = '';
+
+            streakMilestones.forEach(m => {
+                const unlocked = userData.streakDays >= m;
+                const card = document.createElement('div');
+                card.className = `p-4 rounded-xl border text-center transition ${unlocked ? 'bg-white border-amber-300 shadow-sm' : 'bg-corp-bg border-corp-border opacity-50'}`;
+                card.innerHTML = `
+                    <div class="w-10 h-10 mx-auto mb-2 rounded-lg flex items-center justify-center text-lg ${unlocked ? 'bg-amber-500 text-white shadow' : 'bg-slate-200 text-slate-400'}">
+                        <i class="fa-solid fa-fire"></i>
+                    </div>
+                    <div class="font-bold text-slate-900 text-xs">${m} 天挑戰</div>
+                    <div class="text-[10px] font-semibold ${unlocked ? 'text-amber-600' : 'text-slate-400'} mt-1">
+                        ${unlocked ? '已解鎖成就' : `進度: ${userData.streakDays}/${m}`}
+                    </div>
+                `;
+                streakGrid.appendChild(card);
+            });
+
+            perfectMilestones.forEach(m => {
+                const unlocked = userData.perfectQuizCount >= m;
+                const card = document.createElement('div');
+                card.className = `p-4 rounded-xl border text-center transition ${unlocked ? 'bg-white border-emerald-300 shadow-sm' : 'bg-corp-bg border-corp-border opacity-50'}`;
+                card.innerHTML = `
+                    <div class="w-10 h-10 mx-auto mb-2 rounded-lg flex items-center justify-center text-lg ${unlocked ? 'bg-emerald-600 text-white shadow' : 'bg-slate-200 text-slate-400'}">
+                        <i class="fa-solid fa-award"></i>
+                    </div>
+                    <div class="font-bold text-slate-900 text-xs">滿分 ${m} 次</div>
+                    <div class="text-[10px] font-semibold ${unlocked ? 'text-emerald-600' : 'text-slate-400'} mt-1">
+                        ${unlocked ? '已解鎖成就' : `進度: ${userData.perfectQuizCount}/${m}`}
+                    </div>
+                `;
+                perfectGrid.appendChild(card);
+            });
+        }
+
+        let statsChart;
+        function initChart() {
+            const ctx = document.getElementById('badgeStatsChart').getContext('2d');
+            statsChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['連續學習天數', '100%滿分評測', '自訂題庫數量'],
+                    datasets: [{
+                        label: '個人學習成效指標',
+                        data: [userData.streakDays, userData.perfectQuizCount, userData.customQuestions.length],
+                        backgroundColor: ['#D97706', '#059669', '#2563EB'],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
+
+        function updateChart() {
+            if (statsChart) {
+                statsChart.data.datasets[0].data = [userData.streakDays, userData.perfectQuizCount, userData.customQuestions.length];
+                statsChart.update();
+            }
+        }
+
+        // --- PAGE 5: LEADERBOARD ---
+        function renderLeaderboard(playersList = []) {
+            const tbody = document.getElementById('leaderboardTbody');
+            tbody.innerHTML = '';
+
+            let players = playersList.length > 0 ? playersList : [
+                { fullName: userData.fullName, streakDays: userData.streakDays, perfectQuizCount: userData.perfectQuizCount },
+                { fullName: "執行長", streakDays: 45, perfectQuizCount: 88 },
+                { fullName: "技術總監", streakDays: 20, perfectQuizCount: 30 },
+                { fullName: "專案經理", streakDays: 7, perfectQuizCount: 5 }
+            ];
+
+            players.sort((a, b) => (b.perfectQuizCount || 0) - (a.perfectQuizCount || 0) || (b.streakDays || 0) - (a.streakDays || 0));
+
+            players.forEach((p, idx) => {
+                const tr = document.createElement('tr');
+                tr.className = idx < 3 ? "bg-amber-50/40" : "hover:bg-corp-bg";
+
+                let rankBadge = `<span class="font-bold text-slate-500">#${idx + 1}</span>`;
+                if (idx === 0) rankBadge = `<span class="w-6 h-6 rounded-md bg-amber-500 text-white flex items-center justify-center font-bold text-xs shadow-sm"><i class="fa-solid fa-crown"></i></span>`;
+                if (idx === 1) rankBadge = `<span class="w-6 h-6 rounded-md bg-slate-400 text-white flex items-center justify-center font-bold text-xs shadow-sm">2</span>`;
+                if (idx === 2) rankBadge = `<span class="w-6 h-6 rounded-md bg-amber-700 text-white flex items-center justify-center font-bold text-xs shadow-sm">3</span>`;
+
+                tr.innerHTML = `
+                    <td class="p-4">${rankBadge}</td>
+                    <td class="p-4 font-bold text-slate-900">${p.fullName || '匿名成員'}</td>
+                    <td class="p-4 text-amber-700"><i class="fa-solid fa-fire me-1"></i>${p.streakDays || 1} 天</td>
+                    <td class="p-4 text-emerald-700"><i class="fa-solid fa-award me-1"></i>${p.perfectQuizCount || 0} 次</td>
+                    <td class="p-4"><span class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200">Senior Professional</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- EXPORTS ---
         function exportPageToExcel() {
             const pool = getAllQuestions();
             const data = pool.map(q => ({
                 "題目編號": q.id,
-                "題目內容": q.question,
+                "題目敘述": q.question,
                 "選項A": q.options[0] || '',
                 "選項B": q.options[1] || '',
                 "選項C": q.options[2] || '',
                 "選項D": q.options[3] || '',
-                "正確答案": q.answer
+                "正確解答": q.answer,
+                "閱讀簽名次數": q.readCount || 0
             }));
 
             const worksheet = XLSX.utils.json_to_sheet(data);
             const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "知識王題庫");
-            XLSX.writeFile(workbook, `ProTrivia_Export_${currentActiveTab}_${Date.now()}.xlsx`);
+            XLSX.utils.book_append_sheet(workbook, worksheet, "企業題庫總表");
+            XLSX.writeFile(workbook, `Enterprise_Trivia_Export_${Date.now()}.xlsx`);
         }
 
-        // 2. High-Res PNG Export (html2canvas)
         function exportPageToPNG() {
             const target = document.getElementById('exportableArea');
             html2canvas(target, { scale: 2 }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = `ProTrivia_${currentActiveTab}_HighRes.png`;
+                link.download = `Enterprise_Trivia_${currentActiveTab}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
             });
         }
 
-        // 3. PDF Export (jsPDF + html2canvas)
         function exportPageToPDF() {
             const { jsPDF } = window.jspdf;
             const target = document.getElementById('exportableArea');
@@ -1172,11 +1199,10 @@
                 const imgData = canvas.toDataURL('image/png');
                 const pdf = new jsPDF('p', 'mm', 'a4');
                 const imgWidth = 210;
-                const pageHeight = 295;
                 const imgHeight = (canvas.height * imgWidth) / canvas.width;
                 
                 pdf.addImage(imgData, 'PNG', 0, 10, imgWidth, imgHeight);
-                pdf.save(`ProTrivia_${currentActiveTab}_Report.pdf`);
+                pdf.save(`Enterprise_Trivia_${currentActiveTab}_Report.pdf`);
             });
         }
     </script>
